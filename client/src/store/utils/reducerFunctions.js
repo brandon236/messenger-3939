@@ -18,9 +18,6 @@ export const addMessageToStore = (state, payload) => {
         latestMessageText: message.text,
         otherUser: convo.otherUser
       }
-      console.log(convo);
-      console.log("between");
-      console.log(newConvo);
       return newConvo;
     } else {
       return convo;

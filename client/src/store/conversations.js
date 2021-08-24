@@ -61,7 +61,6 @@ export const clearSearchedUsers = () => {
 
 // add new conversation when sending a new message
 export const addConversation = (recipientId, newMessage) => {
-  console.log(newMessage);
   return {
     type: ADD_CONVERSATION,
     payload: { recipientId, newMessage },
@@ -71,7 +70,6 @@ export const addConversation = (recipientId, newMessage) => {
 // REDUCER
 
 const reducer = (state = [], action) => {
-  console.log(action);
   switch (action.type) {
     case GET_CONVERSATIONS:
       return action.conversations;
