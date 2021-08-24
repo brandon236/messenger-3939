@@ -74,7 +74,7 @@ export const addNewConvoToStore = (state, recipientId, message) => {
       const newConvo = {
         ...convo,
         id: message.conversationId,
-        messages: convo.messages.concat(message),
+        messages: [message],
         latestMessageText: message.text,
       };
       return newConvo;
