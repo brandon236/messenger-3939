@@ -24,11 +24,11 @@ const Login = (props) => {
   };
 
   if (user.id) {
-    return <Redirect to="/home" />;
+    return <Redirect to = "/home" />;
   }
 
   return (
-    <Grid container justify="center">
+    <Grid container justifyContent = "center">
       <Box>
         <Grid container item>
           <Typography>Need to register?</Typography>
