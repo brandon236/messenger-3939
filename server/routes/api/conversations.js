@@ -46,16 +46,12 @@ router.get("/", async (req, res, next) => {
         },
       ],
     });
-    // const date = new Date(Date.now()).toISOString();
-    // const values = {
-    //   "dateLastAccessed": date
-    // }
-    // const selector = {
-    //   where : {}
-    // }
-    // const tempcon = await Conversation.update(values, selector);
-    // console.log("values");
-    // console.log(values);
+    // const newDate = new Date(Date.now()).toISOString();
+    // await Conversation.update({ "dateLastAccessed": dateLastAccessed, }, {
+    //   where: {
+    //     "dateLastAccessed": null,
+    //   }
+    // });
 
     for (let i = 0; i < conversations.length; i++) {
       const convo = conversations[i];
@@ -75,6 +71,13 @@ router.get("/", async (req, res, next) => {
         convoJSON.unreadMessages = 0;
         const newDate = new Date(Date.now());
         convoJSON.dateLastAccessed = newDate.toISOString();
+        // console.log("convo");
+        // console.log(convoJSON);
+        await Conversation.update({ dateLastAccessed: newDate.toISOString() }, {
+          where: {
+            id: convoJSON.id,
+          }
+        })
       }
       // console.log("messages")
       // console.log(convo.messages);
@@ -130,8 +133,6 @@ router.post("/", async (req, res, next) => {
     const tempcon = await Conversation.update({ "dateLastAccessed": dateLastAccessed, }, {
       where: {
         id: id,
-        returning: true,
-        plain: true
       }
     });
     console.log("tempcon2")
