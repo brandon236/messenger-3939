@@ -4,6 +4,7 @@ import {
   addSearchedUsersToStore,
   removeOfflineUserFromStore,
   addMessageToStore,
+  addNewAccessedDate,
 } from "./utils/reducerFunctions";
 
 // ACTIONS
@@ -15,6 +16,7 @@ const REMOVE_OFFLINE_USER = "REMOVE_OFFLINE_USER";
 const SET_SEARCHED_USERS = "SET_SEARCHED_USERS";
 const CLEAR_SEARCHED_USERS = "CLEAR_SEARCHED_USERS";
 const ADD_CONVERSATION = "ADD_CONVERSATION";
+const ADD_DATE = "ADD_DATE";
 
 // ACTION CREATORS
 
@@ -25,10 +27,11 @@ export const gotConversations = (conversations) => {
   };
 };
 
-export const setNewMessage = (message, sender) => {
+
+export const setNewMessage = (message, newDateAccessed, sender) => {
   return {
     type: SET_MESSAGE,
-    payload: { message, sender: sender || null },
+    payload: { message, newDateAccessed, sender: sender || null },
   };
 };
 
@@ -67,7 +70,12 @@ export const addConversation = (recipientId, newMessage) => {
   };
 };
 
-// REDUCER
+export const addDate = (body) => {
+  return {
+    type: ADD_DATE,
+    payload: { body }
+  }
+}
 
 const reducer = (state = [], action) => {
   switch (action.type) {
@@ -91,9 +99,12 @@ const reducer = (state = [], action) => {
         action.payload.recipientId,
         action.payload.newMessage
       );
+    case ADD_DATE:
+      return addNewAccessedDate(state, action.payload);
     default:
       return state;
   }
 };
+
 
 export default reducer;
