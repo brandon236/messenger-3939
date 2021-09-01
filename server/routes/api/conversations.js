@@ -56,29 +56,6 @@ router.get("/", async (req, res, next) => {
     for (let i = 0; i < conversations.length; i++) {
       const convo = conversations[i];
       const convoJSON = convo.toJSON();
-      if (convoJSON.dateLastAccessed !== null) {
-        let unreadCount = 0;
-        for (let j = convo.messages.length-1; j >= 0 ; j--) {
-          console.log(convo.messages[j].createdAt);
-          if (Date.parse(convo.messages[j].createdAt) > Date.parse(convoJSON.dateLastAccessed)) {
-            unreadCount++;
-          } else {
-            break;
-          }
-        }
-        convoJSON.unreadMessages = unreadCount;
-      } else {
-        convoJSON.unreadMessages = 0;
-        const newDate = new Date(Date.now());
-        convoJSON.dateLastAccessed = newDate.toISOString();
-        // console.log("convo");
-        // console.log(convoJSON);
-        await Conversation.update({ dateLastAccessed: newDate.toISOString() }, {
-          where: {
-            id: convoJSON.id,
-          }
-        })
-      }
       // console.log("messages")
       // console.log(convo.messages);
       // set a property "otherUser" so that frontend will have easier access
@@ -97,11 +74,48 @@ router.get("/", async (req, res, next) => {
         convoJSON.otherUser.online = false;
       }
 
+      if (convoJSON.id === 10) {
+        console.log(convoJSON);
+      }
+
+      if (convoJSON.dateLastAccessed !== null) {
+        console.log("not null");
+        let unreadCount = 0;
+        for (let j = 0; j < convo.messages.length ; j++) {
+          //check if the last message was the user's own message or the other user
+          if (convoJSON.messages[j].senderId === convoJSON.otherUser.id) {
+            console.log("not user");
+            if (Date.parse(convoJSON.messages[j].createdAt) > Date.parse(convoJSON.dateLastAccessed)) {
+              console.log("unread");
+              unreadCount++;
+            } else {
+              break;
+            }
+          } else {
+            console.log("user");
+            break;
+          }
+        }
+        convoJSON.unreadMessages = unreadCount;
+      } else {
+        console.log("null");
+        convoJSON.unreadMessages = 0;
+        const newDate = new Date(Date.now());
+        convoJSON.dateLastAccessed = newDate.toISOString();
+        // console.log("convo");
+        // console.log(convoJSON);
+        await Conversation.update({ dateLastAccessed: newDate.toISOString() }, {
+          where: {
+            id: convoJSON.id,
+          }
+        })
+      }
+
       const reversedMessages = convoJSON.messages.slice(0).reverse();
       convoJSON.messages = reversedMessages;
       // set properties for notification count and latest message preview
-      console.log("messages");
-      console.log(convoJSON);
+      // console.log("messages");
+      // console.log(convoJSON);
       if (convoJSON.messages.length !== 0) {
         convoJSON.latestMessageText = convoJSON.messages[convoJSON.messages.length-1].text;
       }
@@ -116,11 +130,9 @@ router.get("/", async (req, res, next) => {
 
 
 router.post("/", async (req, res, next) => {
-  // console.log("postFunction");
-  // console.log(req.body);
+  console.log("postFunction");
+  console.log(req.body);
   const {id, dateLastAccessed} = req.body;
-  console.log(id);
-  console.log(typeof dateLastAccessed);
   try {
     // console.log("conversation");
     // console.log(Conversation.create());

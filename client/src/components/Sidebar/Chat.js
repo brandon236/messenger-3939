@@ -4,6 +4,7 @@ import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { makeStyles } from "@material-ui/core/styles";
 import { setActiveChat } from "../../store/activeConversation";
 import { connect } from "react-redux";
+import { addNewDate } from "../../store/utils/thunkCreators";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,7 +26,14 @@ const Chat = (props) => {
   const { otherUser } = conversation;
 
   const handleClick = async (conversation) => {
+    console.log("conversation2");
+    const currentDate = new Date(Date.now());
+    const newConversation = {
+      ...conversation,
+      dateLastAccessed: currentDate.toISOString(),
+    }
     await props.setActiveChat(conversation.otherUser.username);
+    await props.addNewDate(newConversation);
   };
 
   return (
@@ -45,6 +53,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setActiveChat: (id) => {
       dispatch(setActiveChat(id));
+    },
+    addNewDate: (date) => {
+      dispatch(addNewDate(date));
     }
   };
 };
