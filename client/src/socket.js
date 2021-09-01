@@ -1,10 +1,12 @@
 import io from "socket.io-client";
 import store from "./store";
 import {
-  setNewMessage,
   removeOfflineUser,
   addOnlineUser,
 } from "./store/conversations";
+import {
+  getActive
+} from "./store/utils/thunkCreators"
 
 const socket = io(window.location.origin);
 
@@ -19,7 +21,8 @@ socket.on("connect", () => {
     store.dispatch(removeOfflineUser(id));
   });
   socket.on("new-message", (data) => {
-    store.dispatch(setNewMessage(data.message, data.sender));
+    console.log("newSend:", data);
+   store.dispatch(getActive(data.message, data.sender, data.senderUsername));
   });
 });
 
