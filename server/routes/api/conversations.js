@@ -79,14 +79,11 @@ router.get("/", async (req, res, next) => {
       }
 
       if (convoJSON.dateLastAccessed !== null) {
-        console.log("not null");
         let unreadCount = 0;
         for (let j = 0; j < convo.messages.length ; j++) {
           //check if the last message was the user's own message or the other user
           if (convoJSON.messages[j].senderId === convoJSON.otherUser.id) {
-            console.log("not user");
             if (Date.parse(convoJSON.messages[j].createdAt) > Date.parse(convoJSON.dateLastAccessed)) {
-              console.log("unread");
               unreadCount++;
             } else {
               break;
@@ -98,7 +95,6 @@ router.get("/", async (req, res, next) => {
         }
         convoJSON.unreadMessages = unreadCount;
       } else {
-        console.log("null");
         convoJSON.unreadMessages = 0;
         const newDate = new Date(Date.now());
         convoJSON.dateLastAccessed = newDate.toISOString();
@@ -147,8 +143,6 @@ router.post("/", async (req, res, next) => {
         id: id,
       }
     });
-    console.log("tempcon2")
-    console.log(tempcon);
     res.json({ tempcon });
   } catch (error) {
     next(error);
