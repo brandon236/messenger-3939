@@ -5,7 +5,9 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
+  addDate
 } from "../conversations";
+
 import { gotUser, setFetchingStatus } from "../user";
 
 axios.interceptors.request.use(async function (config) {
@@ -83,11 +85,20 @@ const saveMessage = async (body) => {
   return data;
 };
 
+const saveDate = async (body, date) => {
+  const newBody = {
+    ...body, 
+    dateLastAccessed: date,
+  }
+  await axios.post("/api/conversations", newBody);
+}
+
 const sendMessage = (data, body) => {
   socket.emit("new-message", {
     message: data.message,
     recipientId: body.recipientId,
     sender: data.sender,
+    senderUsername: body.senderUsername,
   });
 };
 
@@ -95,17 +106,40 @@ const sendMessage = (data, body) => {
 // conversationId will be set to null if its a brand new conversation
 export const postMessage = (body) => async (dispatch) => {
   try {
-    const data = await saveMessage(body)
+    const data = await saveMessage(body);
+    const newDateAccessed = body.dateLastAccessed;
       if (!body.conversationId) {
         dispatch(addConversation(body.recipientId, data.message));
       } else {
-        dispatch(setNewMessage(data.message));
+        dispatch(setNewMessage(data.message, newDateAccessed));
       }
       sendMessage(data, body);
   } catch (error) {
     console.error(error);
   }
 };
+
+//gets the active conversation to be used later
+export const getActive = (message, sender, senderUsername) => async (dispatch, getState) => {
+  const { activeConversation } = getState();
+  let newDate = null;
+  if (activeConversation === senderUsername) {
+    newDate = new Date(Date.now()).toISOString();
+    await saveDate({id: message.conversationId}, newDate);
+  }
+  dispatch(setNewMessage(message, newDate, sender));
+}
+
+export const addNewDate = (date) => async (dispatch) => {
+  try {
+    if (date.otherUser.id === date.messages[date.messages.length-1].senderId) {
+      await saveDate(date, date.dateLastAccessed);
+      dispatch(addDate(date));
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 export const searchUsers = (searchTerm) => async (dispatch) => {
   try {
