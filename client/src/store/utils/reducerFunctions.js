@@ -1,7 +1,6 @@
 export const addMessageToStore = (state, payload) => {
   const { message, sender, newDateAccessed } = payload;
-  console.log("state:", state);
-  // const newActive = (getActiveChat());
+
   // if sender isn't null, that means the message needs to be put in a brand new convo
   if (sender !== null) {
     const newConvo = {
@@ -19,7 +18,6 @@ export const addMessageToStore = (state, payload) => {
       let newUnread = convo.unreadMessages;
       let dateLastAccessed = convo.dateLastAccessed;
       if (newDateAccessed === null) {
-        console.log("dateNull:");
         newUnread = convo.unreadMessages + 1;
       } else {
         dateLastAccessed = newDateAccessed;
@@ -85,8 +83,6 @@ export const addSearchedUsersToStore = (state, users) => {
 export const addNewConvoToStore = (state, recipientId, message) => {
   return state.map((convo) => {
     if (convo.otherUser.id === recipientId) {
-      console.log("convo");
-      console.log(convo);
       const newConvo = {
         ...convo,
         id: message.conversationId,
@@ -103,7 +99,6 @@ export const addNewConvoToStore = (state, recipientId, message) => {
 
 export const addNewAccessedDate = (state, payload) => {
   const { dateLastAccessed, id } = payload.body
-  console.log("dateAdd:", payload);
   return state.map((convo) => {
     if (convo.id === id) {
       if (payload.body.otherUser.id === payload.body.messages[payload.body.messages.length-1].senderId) { 
