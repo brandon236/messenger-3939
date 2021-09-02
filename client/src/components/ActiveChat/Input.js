@@ -49,18 +49,22 @@ const Input = (props) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     // add sender user info if posting to a brand new convo, so that the other user will have access to username, profile pic, etc.
+    let newestDate = dateLastAccessed;
+    if (!dateLastAccessed) {
+      newestDate = new Date(Date.now()).toISOString();
+    }
     const reqBody = {
       text: event.target.text.value,
       recipientId: otherUser.id,
       conversationId,
       sender: conversationId ? null : user,
       senderUsername: user.username,
-      dateLastAccessed,
+      dateLastAccessed: newestDate,
     };
     await postMessage(reqBody);
 
 
-    
+    // sets the typing status back to false.
     const newConversation = {
       username: user.username,
       conversationId: conversationId,

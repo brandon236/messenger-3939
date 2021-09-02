@@ -119,9 +119,6 @@ export const postMessage = (body) => async (dispatch) => {
       sendTyping(body);
       dispatch(setTyping(body.conversationId, body.typing, body.username));
     } else {
-      if (!body.dateLastAccessed) {
-        body.dateLastAccessed = new Date(Date.now()).toISOString();
-      }
       const data = await saveMessage(body);
         if (!body.conversationId) {
           dispatch(addConversation(body.recipientId, data.message));
@@ -139,7 +136,7 @@ export const postMessage = (body) => async (dispatch) => {
 export const getActive = (message, sender, senderUsername, newDateAccessed) => async (dispatch, getState) => {
   const { activeConversation } = getState();
   let newDate = null;
-  if (sender === null) {
+  if (!sender) {
     if (activeConversation === senderUsername) {
       newDate = new Date(Date.now()).toISOString();
       await saveDate({id: message.conversationId}, newDate);
