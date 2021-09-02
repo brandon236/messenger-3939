@@ -5,6 +5,7 @@ import {
   removeOfflineUserFromStore,
   addMessageToStore,
   addNewAccessedDate,
+  changeTyping,
 } from "./utils/reducerFunctions";
 
 // ACTIONS
@@ -17,6 +18,7 @@ const SET_SEARCHED_USERS = "SET_SEARCHED_USERS";
 const CLEAR_SEARCHED_USERS = "CLEAR_SEARCHED_USERS";
 const ADD_CONVERSATION = "ADD_CONVERSATION";
 const ADD_DATE = "ADD_DATE";
+const SET_TYPING = "SET_TYPING";
 
 // ACTION CREATORS
 
@@ -26,6 +28,13 @@ export const gotConversations = (conversations) => {
     conversations,
   };
 };
+
+export const setTyping = (recipientId, typing, username) => {
+  return {
+    type: SET_TYPING,
+    payload: { recipientId, typing, username: username || null },
+  }
+}
 
 
 export const setNewMessage = (message, newDateAccessed, sender) => {
@@ -101,6 +110,8 @@ const reducer = (state = [], action) => {
       );
     case ADD_DATE:
       return addNewAccessedDate(state, action.payload);
+    case SET_TYPING:
+      return changeTyping(state, action.payload);
     default:
       return state;
   }
