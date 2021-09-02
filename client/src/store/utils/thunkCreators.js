@@ -5,7 +5,8 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
-  addDate
+  addDate,
+  setTyping,
 } from "../conversations";
 
 import { gotUser, setFetchingStatus } from "../user";
@@ -99,6 +100,15 @@ const sendMessage = (data, body) => {
     recipientId: body.recipientId,
     sender: data.sender,
     senderUsername: body.senderUsername,
+    newDateAccessed: body.dateLastAccessed,
+  });
+};
+
+const sendTyping = (body) => {
+  console.log("typing:", body);
+  socket.emit("isTyping", {
+    recipientId: body.conversationId,
+    typing: body.typing,
   });
 };
 
@@ -106,35 +116,48 @@ const sendMessage = (data, body) => {
 // conversationId will be set to null if its a brand new conversation
 export const postMessage = (body) => async (dispatch) => {
   try {
-    const data = await saveMessage(body);
-    const newDateAccessed = body.dateLastAccessed;
-      if (!body.conversationId) {
-        dispatch(addConversation(body.recipientId, data.message));
-      } else {
-        dispatch(setNewMessage(data.message, newDateAccessed));
+    if (body.setType) {
+      sendTyping(body);
+      dispatch(setTyping(body.conversationId, body.typing, body.username));
+    } else {
+      if (!body.dateLastAccessed) {
+        body.dateLastAccessed = new Date(Date.now()).toISOString();
       }
-      sendMessage(data, body);
+      const data = await saveMessage(body);
+        if (!body.conversationId) {
+          dispatch(addConversation(body.recipientId, data.message));
+        } else {
+          dispatch(setNewMessage(data.message, body.dateLastAccessed));
+        }
+        sendMessage(data, body);
+    }
   } catch (error) {
     console.error(error);
   }
 };
 
 //gets the active conversation to be used later
-export const getActive = (message, sender, senderUsername) => async (dispatch, getState) => {
+export const getActive = (message, sender, senderUsername, newDateAccessed) => async (dispatch, getState) => {
   const { activeConversation } = getState();
   let newDate = null;
-  if (activeConversation === senderUsername) {
-    newDate = new Date(Date.now()).toISOString();
-    await saveDate({id: message.conversationId}, newDate);
+  if (sender === null) {
+    if (activeConversation === senderUsername) {
+      newDate = new Date(Date.now()).toISOString();
+      await saveDate({id: message.conversationId}, newDate);
+    }
+  } else {
+    newDate = newDateAccessed;
   }
   dispatch(setNewMessage(message, newDate, sender));
 }
 
 export const addNewDate = (date) => async (dispatch) => {
   try {
-    if (date.otherUser.id === date.messages[date.messages.length-1].senderId) {
-      await saveDate(date, date.dateLastAccessed);
-      dispatch(addDate(date));
+    if (date.messages.length > 0) {
+      if (date.otherUser.id === date.messages[date.messages.length-1].senderId) {
+        await saveDate(date, date.dateLastAccessed);
+        dispatch(addDate(date));
+      }
     }
   } catch (error) {
     console.error(error);
@@ -145,6 +168,16 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
   try {
     const { data } = await axios.get(`/api/users/${searchTerm}`);
     dispatch(setSearchedUsers(data));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const changeTyping = (body) => async (dispatch) => {
+  try {
+    console.log("gfsoafdf:", body);
+    sendTyping(body);
+    dispatch(setTyping(body));
   } catch (error) {
     console.error(error);
   }

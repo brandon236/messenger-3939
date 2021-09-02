@@ -3,6 +3,7 @@ import { FormControl, FilledInput } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { postMessage } from "../../store/utils/thunkCreators";
+import { changeTyping } from "../../store/utils/thunkCreators";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -20,10 +21,28 @@ const useStyles = makeStyles(() => ({
 const Input = (props) => {
   const classes = useStyles();
   const [text, setText] = useState("");
-  const { postMessage, otherUser, conversationId, user } = props;
+  const { postMessage, otherUser, conversationId, user, dateLastAccessed, typing } = props;
 
-  const handleChange = (event) => {
+  const handleChange = async (event) => {
     setText(event.target.value);
+    let newConversation = {
+      username: user.username,
+      conversationId: conversationId,
+      setType: 1,
+    }
+    if (event.target.value.length > 0 && otherUser.typing === false){
+      newConversation = {
+        ...newConversation,
+        typing: true,
+      }
+      await postMessage(newConversation);
+    } else if (event.target.value.length === 0 && otherUser.typing === true) {
+      newConversation = {
+        ...newConversation,
+        typing: false,
+      }
+      await postMessage(newConversation);
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -35,9 +54,18 @@ const Input = (props) => {
       conversationId,
       sender: conversationId ? null : user,
       senderUsername: user.username,
+      dateLastAccessed,
     };
     await postMessage(reqBody);
+
+    const newConversation = {
+      username: user.username,
+      conversationId: conversationId,
+      setType: 1,
+      typing: false,
+    }
     setText("");
+    await postMessage(newConversation);
   };
 
   return (
@@ -60,6 +88,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     postMessage: (message) => {
       dispatch(postMessage(message));
+    },
+    changeTyping: (body) => {
+      dispatch(changeTyping(body));
     },
   };
 };
