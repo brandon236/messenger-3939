@@ -45,6 +45,14 @@ io.on("connection", (socket) => {
       message: data.message,
       sender: data.sender,
       senderUsername: data.senderUsername,
+      newDateAccessed: data.newDateAccessed,
+    });
+  });
+
+  socket.on("isTyping", (data) => {
+    socket.broadcast.emit("isTyping", {
+      recipientId: data.recipientId,
+      typing: data.typing,
     });
   });
 

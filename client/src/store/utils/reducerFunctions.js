@@ -17,7 +17,7 @@ export const addMessageToStore = (state, payload) => {
     if (convo.id === message.conversationId) {
       let newUnread = convo.unreadMessages;
       let dateLastAccessed = convo.dateLastAccessed;
-      if (newDateAccessed === null) {
+      if (!newDateAccessed) {
         newUnread = convo.unreadMessages + 1;
       } else {
         dateLastAccessed = newDateAccessed;
@@ -88,7 +88,7 @@ export const addNewConvoToStore = (state, recipientId, message) => {
         id: message.conversationId,
         messages: [message],
         latestMessageText: message.text,
-        unreadMessages: 1,
+        unreadMessages: 0,
       };
       return newConvo;
     } else {
@@ -110,6 +110,33 @@ export const addNewAccessedDate = (state, payload) => {
         return newConvo;
       } else {
         return convo;
+      }
+    } else {
+      return convo;
+    }
+  })
+};
+
+export const changeTyping = (state, payload) => {
+  const { recipientId, typing, username } = payload;
+  return state.map((convo) => {
+    if (convo.id === recipientId) {
+      if (username) {
+        const newOtherUser = {
+          ...convo.otherUser,
+          typing
+        }
+        const newConvo = {
+          ...convo,
+          otherUser: newOtherUser
+        }
+        return newConvo;
+      } else {
+        const newConvo = {
+          ...convo,
+          typing,
+        };
+        return newConvo;
       }
     } else {
       return convo;

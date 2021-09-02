@@ -3,6 +3,7 @@ import store from "./store";
 import {
   removeOfflineUser,
   addOnlineUser,
+  setTyping,
 } from "./store/conversations";
 import {
   getActive
@@ -21,9 +22,11 @@ socket.on("connect", () => {
     store.dispatch(removeOfflineUser(id));
   });
   socket.on("new-message", (data) => {
-    console.log("newSend:", data);
-   store.dispatch(getActive(data.message, data.sender, data.senderUsername));
+   store.dispatch(getActive(data.message, data.sender, data.senderUsername, data.newDateAccessed));
   });
+  socket.on("isTyping", (data) => {
+    store.dispatch(setTyping(data.recipientId, data.typing));
+   });
 });
 
 export default socket;
