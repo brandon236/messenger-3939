@@ -18,7 +18,7 @@ const Messages = (props) => {
         );
       })}
       {/* When the other user is typing a message */}
-      {typing === true ? <OtherUserBubble key={"temp"} text={"..."} time={null} otherUser={otherUser} /> : null}
+      {typing === true ? <OtherUserBubble key={"temp"} text={"●●●"} time={null} otherUser={otherUser} /> : null}
     </Box>
   );
 };

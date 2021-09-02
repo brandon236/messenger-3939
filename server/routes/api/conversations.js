@@ -46,12 +46,6 @@ router.get("/", async (req, res, next) => {
         },
       ],
     });
-    // const newDate = new Date(Date.now()).toISOString();
-    // await Conversation.update({ "dateLastAccessed": dateLastAccessed, }, {
-    //   where: {
-    //     "dateLastAccessed": null,
-    //   }
-    // });
 
     for (let i = 0; i < conversations.length; i++) {
       const convo = conversations[i];

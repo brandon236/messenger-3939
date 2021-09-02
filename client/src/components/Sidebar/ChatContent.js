@@ -41,7 +41,6 @@ const ChatContent = (props) => {
   const classes = useStyles();
 
   const { conversation } = props;
-  console.log("conversation:", props);
   const { latestMessageText, otherUser, unreadMessages, typing } = conversation;
 
   return (
@@ -51,7 +50,7 @@ const ChatContent = (props) => {
           {otherUser.username}
         </Typography>
         <Typography className={unreadMessages > 0 ? classes.previewTextBold : classes.previewTextNormal}>
-          {typing === false ? latestMessageText : "Typing..."}
+          {typing === false || !typing ? latestMessageText : "Typing..."}
         </Typography>
       </Box>
   <Typography className={unreadMessages === 0 || !unreadMessages ? "" : classes.unreadDisplay}>{unreadMessages !== 0 ? unreadMessages : null}</Typography>

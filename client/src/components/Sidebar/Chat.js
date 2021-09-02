@@ -26,7 +26,6 @@ const Chat = (props) => {
   const { otherUser } = conversation;
 
   const handleClick = async (conversation) => {
-    console.log("conversation2");
     const currentDate = new Date(Date.now());
     const newConversation = {
       ...conversation,
