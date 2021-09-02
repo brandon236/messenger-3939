@@ -56,8 +56,6 @@ router.get("/", async (req, res, next) => {
     for (let i = 0; i < conversations.length; i++) {
       const convo = conversations[i];
       const convoJSON = convo.toJSON();
-      // console.log("messages")
-      // console.log(convo.messages);
       // set a property "otherUser" so that frontend will have easier access
       if (convoJSON.user1) {
         convoJSON.otherUser = convoJSON.user1;
@@ -74,10 +72,6 @@ router.get("/", async (req, res, next) => {
         convoJSON.otherUser.online = false;
       }
 
-      if (convoJSON.id === 10) {
-        console.log(convoJSON);
-      }
-
       if (convoJSON.dateLastAccessed !== null) {
         let unreadCount = 0;
         for (let j = 0; j < convo.messages.length ; j++) {
@@ -89,7 +83,6 @@ router.get("/", async (req, res, next) => {
               break;
             }
           } else {
-            console.log("user");
             break;
           }
         }
@@ -98,8 +91,6 @@ router.get("/", async (req, res, next) => {
         convoJSON.unreadMessages = 0;
         const newDate = new Date(Date.now());
         convoJSON.dateLastAccessed = newDate.toISOString();
-        // console.log("convo");
-        // console.log(convoJSON);
         await Conversation.update({ dateLastAccessed: newDate.toISOString() }, {
           where: {
             id: convoJSON.id,
@@ -107,14 +98,14 @@ router.get("/", async (req, res, next) => {
         })
       }
 
+      convoJSON.otherUser.typing = false;
       const reversedMessages = convoJSON.messages.slice(0).reverse();
       convoJSON.messages = reversedMessages;
       // set properties for notification count and latest message preview
-      // console.log("messages");
-      // console.log(convoJSON);
       if (convoJSON.messages.length !== 0) {
         convoJSON.latestMessageText = convoJSON.messages[convoJSON.messages.length-1].text;
       }
+      convoJSON.typing = false;
       conversations[i] = convoJSON;
     }
 
@@ -126,18 +117,8 @@ router.get("/", async (req, res, next) => {
 
 
 router.post("/", async (req, res, next) => {
-  console.log("postFunction");
-  console.log(req.body);
   const {id, dateLastAccessed} = req.body;
   try {
-    // console.log("conversation");
-    // console.log(Conversation.create());
-    // const testConvo = await Conversation.create({
-    //   user1Id: 3,
-    //   user2Id: 9,
-    // });
-    // console.log("testconvo");
-    // console.log(testConvo);
     const tempcon = await Conversation.update({ "dateLastAccessed": dateLastAccessed, }, {
       where: {
         id: id,
