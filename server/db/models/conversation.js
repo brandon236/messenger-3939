@@ -8,7 +8,8 @@ const Conversation = db.define("conversation", {
   id: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    primaryKey: true
+    primaryKey: true,
+    autoIncrement: true
   },
   dateLastAccessed: {
     type: DataTypes.STRING,
