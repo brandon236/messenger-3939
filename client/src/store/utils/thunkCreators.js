@@ -105,7 +105,6 @@ const sendMessage = (data, body) => {
 };
 
 const sendTyping = (body) => {
-  console.log("typing:", body);
   socket.emit("isTyping", {
     recipientId: body.conversationId,
     typing: body.typing,
@@ -173,9 +172,9 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
   }
 };
 
+//This function isn't being called for some reason. I had to use the postMessage function instead. 
 export const changeTyping = (body) => async (dispatch) => {
   try {
-    console.log("gfsoafdf:", body);
     sendTyping(body);
     dispatch(setTyping(body));
   } catch (error) {

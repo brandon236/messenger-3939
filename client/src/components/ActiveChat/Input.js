@@ -21,8 +21,9 @@ const useStyles = makeStyles(() => ({
 const Input = (props) => {
   const classes = useStyles();
   const [text, setText] = useState("");
-  const { postMessage, otherUser, conversationId, user, dateLastAccessed, typing } = props;
+  const { postMessage, otherUser, conversationId, user, dateLastAccessed } = props;
 
+  //setType is being used to tell the postMessage function to only update the typing variable. 
   const handleChange = async (event) => {
     setText(event.target.value);
     let newConversation = {
@@ -58,6 +59,8 @@ const Input = (props) => {
     };
     await postMessage(reqBody);
 
+
+    
     const newConversation = {
       username: user.username,
       conversationId: conversationId,

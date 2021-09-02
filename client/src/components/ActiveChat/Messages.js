@@ -4,7 +4,7 @@ import { SenderBubble, OtherUserBubble } from "../ActiveChat";
 import moment from "moment";
 
 const Messages = (props) => {
-  const { messages, otherUser, userId } = props;
+  const { messages, otherUser, userId, typing } = props;
 
   return (
     <Box>
@@ -17,6 +17,8 @@ const Messages = (props) => {
           <OtherUserBubble key={message.id} text={message.text} time={time} otherUser={otherUser} />
         );
       })}
+      {/* When the other user is typing a message */}
+      {typing === true ? <OtherUserBubble key={"temp"} text={"..."} time={null} otherUser={otherUser} /> : null}
     </Box>
   );
 };
