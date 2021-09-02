@@ -147,6 +147,7 @@ export const getActive = (message, sender, senderUsername, newDateAccessed) => a
   dispatch(setNewMessage(message, newDate, sender));
 }
 
+//only adds a new date if the last message was posted by the other user
 export const addNewDate = (date) => async (dispatch) => {
   try {
     if (date.messages.length > 0) {
