@@ -5,7 +5,7 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
-  addDate,
+  setRead,
   setTyping,
 } from "../conversations";
 
@@ -86,12 +86,8 @@ const saveMessage = async (body) => {
   return data;
 };
 
-const saveDate = async (body, date) => {
-  const newBody = {
-    ...body, 
-    dateLastAccessed: date,
-  }
-  await axios.post("/api/conversations", newBody);
+const updateMessage = async (body) => {
+  await axios.put("/api/messages", body);
 }
 
 const sendMessage = (data, body) => {
@@ -123,7 +119,7 @@ export const postMessage = (body) => async (dispatch) => {
         if (!body.conversationId) {
           dispatch(addConversation(body.recipientId, data.message));
         } else {
-          dispatch(setNewMessage(data.message, body.dateLastAccessed));
+          dispatch(setNewMessage(data.message, body.userID));
         }
         sendMessage(data, body);
     }
@@ -133,27 +129,29 @@ export const postMessage = (body) => async (dispatch) => {
 };
 
 //gets the active conversation to be used later
-export const getActive = (message, sender, senderUsername, newDateAccessed) => async (dispatch, getState) => {
+export const getActive = (message, sender, senderUsername) => async (dispatch, getState) => {
   const { activeConversation } = getState();
-  let newDate = null;
+  const userID = getState().user.id;
   if (!sender) {
     if (activeConversation === senderUsername) {
-      newDate = new Date(Date.now()).toISOString();
-      await saveDate({id: message.conversationId}, newDate);
+      const newMessage = {
+        ...message,
+        readStatus: true
+      }
+      message = newMessage;
+      await updateMessage(message);
     }
-  } else {
-    newDate = newDateAccessed;
   }
-  dispatch(setNewMessage(message, newDate, sender));
+  dispatch(setNewMessage(message, userID, sender));
 }
 
 //only adds a new date if the last message was posted by the other user
-export const addNewDate = (date) => async (dispatch) => {
+export const setNewRead = (date) => async (dispatch) => {
   try {
     if (date.messages.length > 0) {
       if (date.otherUser.id === date.messages[date.messages.length-1].senderId) {
-        await saveDate(date, date.dateLastAccessed);
-        dispatch(addDate(date));
+        await updateMessage({id: null, readStatus: date.readStatus, convoId: date.id});
+        dispatch(setRead(date.id, date.readStatus, date.unreadMessages));
       }
     }
   } catch (error) {

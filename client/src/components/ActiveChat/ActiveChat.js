@@ -44,7 +44,7 @@ const ActiveChat = (props) => {
               otherUser={conversation.otherUser}
               conversationId={conversation.id}
               user={user}
-              dateLastAccessed={conversation.dateLastAccessed}
+              readStatus={false}
             />
           </Box>
         </>

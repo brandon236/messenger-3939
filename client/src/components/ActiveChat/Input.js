@@ -21,7 +21,7 @@ const useStyles = makeStyles(() => ({
 const Input = (props) => {
   const classes = useStyles();
   const [text, setText] = useState("");
-  const { postMessage, otherUser, conversationId, user, dateLastAccessed } = props;
+  const { postMessage, otherUser, conversationId, user, readStatus } = props;
 
   //setType is being used to tell the postMessage function to only update the typing variable. 
   const handleChange = async (event) => {
@@ -49,17 +49,14 @@ const Input = (props) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     // add sender user info if posting to a brand new convo, so that the other user will have access to username, profile pic, etc.
-    let newestDate = dateLastAccessed;
-    if (!dateLastAccessed) {
-      newestDate = new Date(Date.now()).toISOString();
-    }
     const reqBody = {
       text: event.target.text.value,
       recipientId: otherUser.id,
       conversationId,
       sender: conversationId ? null : user,
       senderUsername: user.username,
-      dateLastAccessed: newestDate,
+      userID: user.id,
+      readStatus
     };
     await postMessage(reqBody);
 

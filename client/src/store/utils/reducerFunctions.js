@@ -1,12 +1,11 @@
 export const addMessageToStore = (state, payload) => {
-  const { message, sender, newDateAccessed } = payload;
+  const { message, sender, userID } = payload;
 
   // if sender isn't null, that means the message needs to be put in a brand new convo
   if (sender !== null) {
     const newConvo = {
       id: message.conversationId,
       otherUser: sender,
-      dateLastAccessed: newDateAccessed,
       unreadMessages: 1,
       messages: [message],
     };
@@ -17,10 +16,8 @@ export const addMessageToStore = (state, payload) => {
     if (convo.id === message.conversationId) {
       let newUnread = convo.unreadMessages;
       let dateLastAccessed = convo.dateLastAccessed;
-      if (!newDateAccessed) {
+      if (message.senderId !== userID && message.readStatus === false) {
         newUnread = convo.unreadMessages + 1;
-      } else {
-        dateLastAccessed = newDateAccessed;
       }
       const newConvo = {
         ...convo,
@@ -97,20 +94,21 @@ export const addNewConvoToStore = (state, recipientId, message) => {
   });
 };
 
-export const addNewAccessedDate = (state, payload) => {
-  const { dateLastAccessed, id } = payload.body
+export const setNewRead = (state, payload) => {
+  const { convoId, readStatus, unreadMessages } = payload
   return state.map((convo) => {
-    if (convo.id === id) {
-      if (payload.body.otherUser.id === payload.body.messages[payload.body.messages.length-1].senderId) { 
-        const newConvo = {
-          ...convo,
-          dateLastAccessed,
+    if (convo.id === convoId) {
+      let newConvo = convo;
+      if (unreadMessages !== 0) {
+        const newMessages = newConvo.messages;
+        newMessages[newMessages.length-1].readStatus = readStatus;
+        newConvo = {
+          ...newConvo,
           unreadMessages: 0,
-        };
-        return newConvo;
-      } else {
-        return convo;
+          messages: newMessages
+        }; 
       }
+        return newConvo;
     } else {
       return convo;
     }
