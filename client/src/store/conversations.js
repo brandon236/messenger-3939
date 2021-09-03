@@ -17,7 +17,7 @@ const REMOVE_OFFLINE_USER = "REMOVE_OFFLINE_USER";
 const SET_SEARCHED_USERS = "SET_SEARCHED_USERS";
 const CLEAR_SEARCHED_USERS = "CLEAR_SEARCHED_USERS";
 const ADD_CONVERSATION = "ADD_CONVERSATION";
-const RESET_UNREAD = "RESET_UNREAD";
+const SET_UNREAD = "SET_UNREAD";
 const SET_TYPING = "SET_TYPING";
 
 // ACTION CREATORS
@@ -79,10 +79,10 @@ export const addConversation = (recipientId, newMessage) => {
   };
 };
 
-export const setRead = (convoId, readStatus) => {
+export const setRead = (convoId, readStatus, unreadMessages) => {
   return {
-    type: RESET_UNREAD,
-    payload: {convoId, readStatus}
+    type: SET_UNREAD,
+    payload: { convoId, readStatus, unreadMessages},
   }
 }
 
@@ -108,7 +108,7 @@ const reducer = (state = [], action) => {
         action.payload.recipientId,
         action.payload.newMessage
       );
-    case RESET_UNREAD:
+    case SET_UNREAD:
       return setNewRead(state, action.payload);
     case SET_TYPING:
       return changeTyping(state, action.payload);

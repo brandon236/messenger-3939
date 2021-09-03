@@ -99,12 +99,17 @@ export const setNewRead = (state, payload) => {
   return state.map((convo) => {
     if (convo.id === convoId) {
       let newConvo = convo;
+      const newMessages = newConvo.messages;
+      newMessages[newMessages.length-1].readStatus = readStatus;
       if (unreadMessages !== 0) {
-        const newMessages = newConvo.messages;
-        newMessages[newMessages.length-1].readStatus = readStatus;
         newConvo = {
           ...newConvo,
           unreadMessages: 0,
+          messages: newMessages
+        }; 
+      } else {
+        newConvo = {
+          ...newConvo,
           messages: newMessages
         }; 
       }

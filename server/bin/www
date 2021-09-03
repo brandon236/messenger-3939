@@ -49,6 +49,14 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("new-read-status", (data) => {
+    socket.broadcast.emit("new-read-status", {
+      id: data.id, 
+      readStatus: data.readStatus,
+      unreadMessages: data.unreadMessages,
+    });
+  });
+
   socket.on("isTyping", (data) => {
     socket.broadcast.emit("isTyping", {
       recipientId: data.recipientId,

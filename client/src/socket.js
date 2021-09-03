@@ -4,6 +4,7 @@ import {
   removeOfflineUser,
   addOnlineUser,
   setTyping,
+  setRead,
 } from "./store/conversations";
 import {
   getActive
@@ -26,6 +27,9 @@ socket.on("connect", () => {
   });
   socket.on("isTyping", (data) => {
     store.dispatch(setTyping(data.recipientId, data.typing));
+   });
+   socket.on("new-read-status", (data) => {
+    store.dispatch(setRead(data.id, data.readStatus, data.unreadMessages));
    });
 });
 

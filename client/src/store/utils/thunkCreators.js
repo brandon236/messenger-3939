@@ -100,6 +100,14 @@ const sendMessage = (data, body) => {
   });
 };
 
+const sendNewRead = (data) => {
+  socket.emit("new-read-status", {
+    id: data.id, 
+    readStatus: data.readStatus,
+    unreadMessages: data.unreadMessages,
+  });
+};
+
 const sendTyping = (body) => {
   socket.emit("isTyping", {
     recipientId: body.conversationId,
@@ -148,9 +156,11 @@ export const getActive = (message, sender, senderUsername) => async (dispatch, g
 //only adds a new date if the last message was posted by the other user
 export const setNewRead = (date) => async (dispatch) => {
   try {
+    console.log("setRead:", date)
     if (date.messages.length > 0) {
       if (date.otherUser.id === date.messages[date.messages.length-1].senderId) {
         await updateMessage({id: null, readStatus: date.readStatus, convoId: date.id});
+        sendNewRead({id: date.id, readStatus: date.readStatus, unreadMessages: date.unreadMessages});
         dispatch(setRead(date.id, date.readStatus, date.unreadMessages));
       }
     }
