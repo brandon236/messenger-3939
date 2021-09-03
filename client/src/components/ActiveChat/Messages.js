@@ -7,9 +7,9 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(() => ({
   avatar: {
-    height: 30,
-    width: 30,
-    marginLeft: "calc(100vw - 590px)",
+    height: 20,
+    width: 20,
+    marginLeft: "calc(100% - 21px)",
     marginTop: 10,
     marginBottom: 10,
   },
