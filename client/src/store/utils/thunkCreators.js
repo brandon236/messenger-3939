@@ -101,7 +101,6 @@ const sendMessage = (data, body) => {
 };
 
 const sendNewRead = (data) => {
-  console.log("sendNewRead");
   socket.emit("new-read-status", {
     id: data.id, 
     readStatus: data.readStatus,
@@ -141,11 +140,9 @@ export const postMessage = (body) => async (dispatch) => {
 export const getActive = (message, sender, senderUsername) => async (dispatch, getState) => {
   const { activeConversation } = getState();
 
-  console.log(activeConversation === senderUsername);
   const userID = getState().user.id;
   if (!sender) {
     if (activeConversation === senderUsername) {
-      console.log("called")
       const newMessage = {
         ...message,
         readStatus: true
@@ -162,7 +159,6 @@ export const getActive = (message, sender, senderUsername) => async (dispatch, g
 //only adds a new date if the last message was posted by the other user
 export const setNewRead = (date) => async (dispatch) => {
   try {
-    console.log("calling set read");
     if (date.messages.length > 0) {
       if (date.otherUser.id === date.messages[date.messages.length-1].senderId) {
         await updateMessage({id: null, readStatus: date.readStatus, convoId: date.id});
