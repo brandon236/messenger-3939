@@ -100,7 +100,14 @@ export const setNewRead = (state, payload) => {
     if (convo.id === convoId) {
       let newConvo = convo;
       const newMessages = newConvo.messages;
-      newMessages[newMessages.length-1].readStatus = readStatus;
+
+      for (let i = newMessages.length-1; i >= 0; i--) {
+        if (newMessages[i].readStatus === !readStatus) {
+          newMessages[i].readStatus = readStatus;
+        } else {
+          break;
+        }
+      }
       if (unreadMessages !== 0) {
         newConvo = {
           ...newConvo,
