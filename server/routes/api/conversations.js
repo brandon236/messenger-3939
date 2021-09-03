@@ -18,7 +18,7 @@ router.get("/", async (req, res, next) => {
           user2Id: userId,
         },
       },
-      attributes: ["id", "dateLastAccessed"],
+      attributes: ["id"],
       order: [[Message, "createdAt", "DESC"]],
       include: [
         { model: Message, order: ["createdAt", "DESC"] },
@@ -66,12 +66,11 @@ router.get("/", async (req, res, next) => {
         convoJSON.otherUser.online = false;
       }
 
-      if (convoJSON.dateLastAccessed !== null) {
         let unreadCount = 0;
         for (let j = 0; j < convo.messages.length ; j++) {
-          //check if the last message was the user's own message or the other user
+          // check if the last message was the user's own message or the other user
           if (convoJSON.messages[j].senderId === convoJSON.otherUser.id) {
-            if (Date.parse(convoJSON.messages[j].createdAt) > Date.parse(convoJSON.dateLastAccessed)) {
+            if (convoJSON.messages[j].readStatus === false) {
               unreadCount++;
             } else {
               break;
@@ -81,16 +80,6 @@ router.get("/", async (req, res, next) => {
           }
         }
         convoJSON.unreadMessages = unreadCount;
-      } else {
-        convoJSON.unreadMessages = 0;
-        const newDate = new Date(Date.now());
-        convoJSON.dateLastAccessed = newDate.toISOString();
-        await Conversation.update({ dateLastAccessed: newDate.toISOString() }, {
-          where: {
-            id: convoJSON.id,
-          }
-        })
-      }
 
       convoJSON.otherUser.typing = false;
       const reversedMessages = convoJSON.messages.slice(0).reverse();
@@ -104,21 +93,6 @@ router.get("/", async (req, res, next) => {
     }
 
     res.json(conversations);
-  } catch (error) {
-    next(error);
-  }
-});
-
-
-router.post("/", async (req, res, next) => {
-  const {id, dateLastAccessed} = req.body;
-  try {
-    const tempcon = await Conversation.update({ "dateLastAccessed": dateLastAccessed, }, {
-      where: {
-        id: id,
-      }
-    });
-    res.json({ tempcon });
   } catch (error) {
     next(error);
   }
