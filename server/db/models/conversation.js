@@ -39,6 +39,7 @@ Conversation.findConversation = async function (user1Id, user2Id) {
   return conversation;
 };
 
+// finds a conversation based on an array of user id's. 
 Conversation.findConversationNew = async function (userIds) {
   const conversation = await Conversation.findOne({
     where: {
