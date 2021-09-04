@@ -13,7 +13,11 @@ const Message = db.define("message", {
   readStatus: {
     type: Sequelize.BOOLEAN,
     allowNull: false,
-  }
+  },
+  readStatusArray: {
+    type: Sequelize.ARRAY(Sequelize.INTEGER),
+    allowNull: false,
+  },
 });
 
 module.exports = Message;
