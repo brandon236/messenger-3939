@@ -14,9 +14,13 @@ const Message = db.define("message", {
     type: Sequelize.BOOLEAN,
     allowNull: false,
   },
-  readStatusArray: {
-    type: Sequelize.ARRAY(Sequelize.INTEGER),
+  readStatusUsers: {
+    type: Sequelize.INTEGER,
     allowNull: false,
+    references: {
+      model: 'usersRead',
+      key: 'id',
+    }
   },
 });
 

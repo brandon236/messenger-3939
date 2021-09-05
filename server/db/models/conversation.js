@@ -2,22 +2,21 @@ const { Op } = require("sequelize");
 const db = require("../db");
 const Message = require("./message");
 const Sequelize = require('Sequelize');
-DataTypes = Sequelize.DataTypes
 
 const Conversation = db.define("conversation", {
   id: {
-    type: DataTypes.INTEGER,
+    type: Sequelize.INTEGER,
     allowNull: false,
     primaryKey: true,
     autoIncrement: true
   },
-  dateLastAccessed: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
   convoUsers: {
-    type: DataTypes.ARRAY(DataTypes.INTEGER),
+    type: Sequelize.INTEGER,
     allowNull: false,
+    references: {
+      model: 'convoUsers',
+      key: 'id',
+    }
   }
 });
 
