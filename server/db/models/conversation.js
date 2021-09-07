@@ -2,18 +2,21 @@ const { Op } = require("sequelize");
 const db = require("../db");
 const Message = require("./message");
 const Sequelize = require('Sequelize');
-DataTypes = Sequelize.DataTypes
 
 const Conversation = db.define("conversation", {
   id: {
-    type: DataTypes.INTEGER,
+    type: Sequelize.INTEGER,
     allowNull: false,
     primaryKey: true,
     autoIncrement: true
   },
-  dateLastAccessed: {
-    type: DataTypes.STRING,
+  convoUsers: {
+    type: Sequelize.INTEGER,
     allowNull: false,
+    references: {
+      model: 'convoUsers',
+      key: 'id',
+    }
   }
 });
 
@@ -28,6 +31,20 @@ Conversation.findConversation = async function (user1Id, user2Id) {
       user2Id: {
         [Op.or]: [user1Id, user2Id]
       }
+    }
+  });
+
+  // return conversation or null if it doesn't exist
+  return conversation;
+};
+
+// finds a conversation based on an array of user id's. 
+Conversation.findConversationNew = async function (userIds) {
+  const conversation = await Conversation.findOne({
+    where: {
+      convoUsers: {
+        [Op.overlap]: userIds,
+      },
     }
   });
 
