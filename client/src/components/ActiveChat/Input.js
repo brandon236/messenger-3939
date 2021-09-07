@@ -8,14 +8,14 @@ import { changeTyping } from "../../store/utils/thunkCreators";
 const useStyles = makeStyles(() => ({
   root: {
     justifySelf: "flex-end",
-    marginTop: 15
+    marginTop: 15,
   },
   input: {
     height: 70,
     backgroundColor: "#F4F6FA",
     borderRadius: 8,
-    marginBottom: 20
-  }
+    marginBottom: 20,
+  },
 }));
 
 const Input = (props) => {
@@ -23,25 +23,25 @@ const Input = (props) => {
   const [text, setText] = useState("");
   const { postMessage, otherUser, conversationId, user, readStatus } = props;
 
-  //setType is being used to tell the postMessage function to only update the typing variable. 
+  //setType is being used to tell the postMessage function to only update the typing variable.
   const handleChange = async (event) => {
     setText(event.target.value);
     let newConversation = {
       username: user.username,
       conversationId: conversationId,
       setType: 1,
-    }
-    if (event.target.value.length > 0 && otherUser.typing === false){
+    };
+    if (event.target.value.length > 0 && otherUser.typing === false) {
       newConversation = {
         ...newConversation,
         typing: true,
-      }
+      };
       await postMessage(newConversation);
     } else if (event.target.value.length === 0 && otherUser.typing === true) {
       newConversation = {
         ...newConversation,
         typing: false,
-      }
+      };
       await postMessage(newConversation);
     }
   };
@@ -56,10 +56,9 @@ const Input = (props) => {
       sender: conversationId ? null : user,
       senderUsername: user.username,
       userID: user.id,
-      readStatus
+      readStatus,
     };
     await postMessage(reqBody);
-
 
     // sets the typing status back to false.
     const newConversation = {
@@ -67,7 +66,7 @@ const Input = (props) => {
       conversationId: conversationId,
       setType: 1,
       typing: false,
-    }
+    };
     setText("");
     await postMessage(newConversation);
   };

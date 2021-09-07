@@ -25,7 +25,7 @@ export const addMessageToStore = (state, payload) => {
         latestMessageText: message.text,
         unreadMessages: newUnread,
         dateLastAccessed,
-      }
+      };
       return newConvo;
     } else {
       return convo;
@@ -124,7 +124,7 @@ export const setNewRead = (state, payload) => {
     } else {
       return convo;
     }
-  })
+  });
 };
 
 export const changeTyping = (state, payload) => {
@@ -139,7 +139,7 @@ export const changeTyping = (state, payload) => {
         const newConvo = {
           ...convo,
           otherUser: newOtherUser
-        }
+        };
         return newConvo;
       } else {
         const newConvo = {
@@ -151,5 +151,5 @@ export const changeTyping = (state, payload) => {
     } else {
       return convo;
     }
-  })
+  });
 };

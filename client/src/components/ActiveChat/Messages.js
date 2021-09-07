@@ -15,7 +15,6 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-
 const Messages = (props) => {
   const classes = useStyles();
   const { messages, otherUser, userId, typing } = props;
@@ -26,19 +25,19 @@ const Messages = (props) => {
         const time = moment(message.createdAt).format("h:mm");
         return message.senderId === userId ? (
           <React.Fragment key={message.id}>
-          <SenderBubble text={message.text} time={time} />
-          { message.readStatus !== false ? 
-            <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>
-          : 
-            null
-          }
+            <SenderBubble text={message.text} time={time} />
+            {message.readStatus !== false ? (
+              <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>
+            ) : null}
           </React.Fragment>
         ) : (
           <OtherUserBubble key={message.id} text={message.text} time={time} otherUser={otherUser} />
         );
       })}
       {/* When the other user is typing a message */}
-      {typing === true ? <OtherUserBubble key={"temp"} text={"●●●"} time={null} otherUser={otherUser} /> : null}
+      {typing === true ? (
+        <OtherUserBubble key={"temp"} text={"●●●"} time={null} otherUser={otherUser} />
+      ) : null}
     </Box>
   );
 };

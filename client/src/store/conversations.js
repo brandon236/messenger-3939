@@ -33,9 +33,8 @@ export const setTyping = (recipientId, typing, username) => {
   return {
     type: SET_TYPING,
     payload: { recipientId, typing, username: username || null },
-  }
-}
-
+  };
+};
 
 export const setNewMessage = (message, userID, sender) => {
   return {
@@ -82,9 +81,9 @@ export const addConversation = (recipientId, newMessage) => {
 export const setRead = (convoId, readStatus, unreadMessages) => {
   return {
     type: SET_UNREAD,
-    payload: { convoId, readStatus, unreadMessages},
-  }
-}
+    payload: { convoId, readStatus, unreadMessages },
+  };
+};
 
 const reducer = (state = [], action) => {
   switch (action.type) {
@@ -103,11 +102,7 @@ const reducer = (state = [], action) => {
     case CLEAR_SEARCHED_USERS:
       return state.filter((convo) => convo.id);
     case ADD_CONVERSATION:
-      return addNewConvoToStore(
-        state,
-        action.payload.recipientId,
-        action.payload.newMessage
-      );
+      return addNewConvoToStore(state, action.payload.recipientId, action.payload.newMessage);
     case SET_UNREAD:
       return setNewRead(state, action.payload);
     case SET_TYPING:
@@ -116,6 +111,5 @@ const reducer = (state = [], action) => {
       return state;
   }
 };
-
 
 export default reducer;

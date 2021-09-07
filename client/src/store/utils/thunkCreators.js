@@ -88,7 +88,7 @@ const saveMessage = async (body) => {
 
 const updateMessage = async (body) => {
   await axios.put("/api/messages", body);
-}
+};
 
 const sendMessage = (data, body) => {
   socket.emit("new-message", {
@@ -102,7 +102,7 @@ const sendMessage = (data, body) => {
 
 const sendNewRead = (data) => {
   socket.emit("new-read-status", {
-    id: data.id, 
+    id: data.id,
     readStatus: data.readStatus,
     unreadMessages: data.unreadMessages,
   });
@@ -124,12 +124,12 @@ export const postMessage = (body) => async (dispatch) => {
       dispatch(setTyping(body.conversationId, body.typing, body.username));
     } else {
       const data = await saveMessage(body);
-        if (!body.conversationId) {
-          dispatch(addConversation(body.recipientId, data.message));
-        } else {
-          dispatch(setNewMessage(data.message, body.userID));
-        }
-        sendMessage(data, body);
+      if (!body.conversationId) {
+        dispatch(addConversation(body.recipientId, data.message));
+      } else {
+        dispatch(setNewMessage(data.message, body.userID));
+      }
+      sendMessage(data, body);
     }
   } catch (error) {
     console.error(error);
@@ -145,31 +145,31 @@ export const getActive = (message, sender, senderUsername) => async (dispatch, g
     if (activeConversation === senderUsername) {
       const newMessage = {
         ...message,
-        readStatus: true
-      }
+        readStatus: true,
+      };
       message = newMessage;
       // set readStatus for the other user
-      sendNewRead({id: message.conversationId, readStatus: newMessage.readStatus, unreadMessages: 0});
+      sendNewRead({ id: message.conversationId, readStatus: newMessage.readStatus, unreadMessages: 0 });
       await updateMessage(newMessage);
     }
   }
   dispatch(setNewMessage(message, userID, sender));
-}
+};
 
 //only adds a new date if the last message was posted by the other user
 export const setNewRead = (date) => async (dispatch) => {
   try {
     if (date.messages.length > 0) {
-      if (date.otherUser.id === date.messages[date.messages.length-1].senderId) {
-        await updateMessage({id: null, readStatus: date.readStatus, convoId: date.id});
-        sendNewRead({id: date.id, readStatus: date.readStatus, unreadMessages: date.unreadMessages});
+      if (date.otherUser.id === date.messages[date.messages.length - 1].senderId) {
+        await updateMessage({ id: null, readStatus: date.readStatus, convoId: date.id });
+        sendNewRead({ id: date.id, readStatus: date.readStatus, unreadMessages: date.unreadMessages });
         dispatch(setRead(date.id, date.readStatus, date.unreadMessages));
       }
     }
   } catch (error) {
     console.error(error);
   }
-}
+};
 
 export const searchUsers = (searchTerm) => async (dispatch) => {
   try {
@@ -180,7 +180,7 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
   }
 };
 
-//This function isn't being called for some reason. I had to use the postMessage function instead. 
+//This function isn't being called for some reason. I had to use the postMessage function instead.
 export const changeTyping = (body) => async (dispatch) => {
   try {
     sendTyping(body);

@@ -15,9 +15,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     "&:hover": {
-      cursor: "grab"
-    }
-  }
+      cursor: "grab",
+    },
+  },
 }));
 
 const Chat = (props) => {
@@ -29,7 +29,7 @@ const Chat = (props) => {
     const newConversation = {
       ...conversation,
       readStatus: true,
-    }
+    };
     await props.setActiveChat(conversation.otherUser.username);
     await props.setNewRead(newConversation);
   };
@@ -54,7 +54,7 @@ const mapDispatchToProps = (dispatch) => {
     },
     setNewRead: (date) => {
       dispatch(setNewRead(date));
-    }
+    },
   };
 };
 

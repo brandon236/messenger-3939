@@ -33,8 +33,8 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "50%",
     display: "flex",
     justifyContent: "center",
-    alignItems: "center"
-  }
+    alignItems: "center",
+  },
 }));
 
 const ChatContent = (props) => {
@@ -53,7 +53,9 @@ const ChatContent = (props) => {
           {typing === false || !typing ? latestMessageText : "Typing..."}
         </Typography>
       </Box>
-  <Badge className={unreadMessages === 0 || !unreadMessages ? "" : classes.unreadDisplay}>{unreadMessages !== 0 ? unreadMessages : null}</Badge>
+      <Badge className={unreadMessages === 0 || !unreadMessages ? "" : classes.unreadDisplay}>
+        {unreadMessages !== 0 ? unreadMessages : null}
+      </Badge>
     </Box>
   );
 };
