@@ -48,22 +48,32 @@ router.put("/", async (req, res, next) => {
     if (!req.user) {
       return res.sendStatus(401);
     }
-    const { readStatus, id, convoId } = req.body;
-    let whereValues = {};
-    if (id) {
-      whereValues = {
-        id: id
-      } 
-    } else {
-      whereValues = {
-        "readStatus": !readStatus,
-        "conversationId": convoId,
+
+    const newFoundConvo = await Conversation.findConversation(
+      req.body.senderId,
+      req.user.id,
+    );
+    // checks to make sure the user is part of the conversation
+    if (newFoundConvo) {
+      if (newFoundConvo.dataValues.id === req.body.conversationId) {
+        const { readStatus, id, conversationId } = req.body;
+        let whereValues = {};
+        if (id) {
+          whereValues = {
+            id: id
+          } 
+        } else {
+          whereValues = {
+            "readStatus": !readStatus,
+            "conversationId": conversationId,
+          }
+        }
+        await Message.update({ "readStatus": readStatus }, {
+          where: whereValues
+        });
+        res.json({ readStatus, id });
       }
     }
-      await Message.update({ "readStatus": readStatus, }, {
-        where: whereValues
-      });
-    res.json({ readStatus, id });
   } catch (error) {
     next(error);
   }

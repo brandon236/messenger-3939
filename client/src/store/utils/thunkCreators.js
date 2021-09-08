@@ -162,7 +162,7 @@ export const setNewRead = (date) => async (dispatch) => {
   try {
     if (date.messages.length > 0) {
       if (date.otherUser.id === date.messages[date.messages.length - 1].senderId) {
-        await updateMessage({ id: null, readStatus: date.readStatus, convoId: date.id });
+        await updateMessage({ id: null, readStatus: date.readStatus, conversationId: date.id, senderId: date.otherUser.id });
         sendNewRead({ id: date.id, readStatus: date.readStatus, unreadMessages: date.unreadMessages });
         dispatch(setRead(date.id, date.readStatus, date.unreadMessages));
       }
