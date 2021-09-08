@@ -133,24 +133,22 @@ export const changeTyping = (state, payload) => {
   const { recipientId, typing, username } = payload;
   return state.map((convo) => {
     if (convo.id === recipientId) {
-      let newConvo = convo;
+      let newOtherUser = convo.otherUser;
+      let newTyping = convo.typing;
       if (username) {
-        const newOtherUser = {
-          ...newConvo.otherUser,
-          typing
-        }
-        newConvo = {
-          ...convo,
-          otherUser: newOtherUser
+        newOtherUser = {
+          ...newOtherUser,
+          typing: typing,
         };
-        return newConvo;
       } else {
-        newConvo = {
-          ...convo,
-          typing,
-        };
-        return newConvo;
+        newTyping = typing;
       }
+      const newConvo = {
+        ...convo,
+        otherUser: newOtherUser,
+        typing: newTyping,
+      };
+      return newConvo;
     } else {
       return convo;
     }
