@@ -36,7 +36,7 @@ const Input = (props) => {
         ...newConversation,
         typing: true,
       };
-      //this is supposed to say "changeTyping(newConversation)" but that function isn't being called so I'm using an if statement inside of postMessage);
+      //this is supposed to say "changeTyping(newConversation)" but that function isn't being called so I'm using an if statement inside of postMessage. 
       await postMessage(newConversation);
     } else if (event.target.value.length === 0 && otherUser.typing === true) {
       newConversation = {
