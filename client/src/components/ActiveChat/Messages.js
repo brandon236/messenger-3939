@@ -26,7 +26,7 @@ const Messages = (props) => {
         return message.senderId === userId ? (
           <Box key={message.id}>
             <SenderBubble text={message.text} time={time} />
-            {message.readStatus && (
+            {message.readStatus !== false && (
               <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}/>
             )}
           </Box>
