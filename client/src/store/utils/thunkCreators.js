@@ -119,6 +119,7 @@ const sendTyping = (body) => {
 // conversationId will be set to null if its a brand new conversation
 export const postMessage = (body) => async (dispatch) => {
   try {
+    //the substitute for my changeTyping function (which can't be called for some reason)
     if (body.setType) {
       sendTyping(body);
       dispatch(setTyping(body.conversationId, body.typing, body.username));

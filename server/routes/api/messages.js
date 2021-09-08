@@ -49,20 +49,20 @@ router.put("/", async (req, res, next) => {
       return res.sendStatus(401);
     }
     const { readStatus, id, convoId } = req.body;
+    let whereValues = {};
     if (id) {
-      await Message.update({ "readStatus": readStatus, }, {
-        where: {
-          id: id,
-        }
-      });
+      whereValues = {
+        id: id
+      } 
     } else {
-      await Message.update({ "readStatus": readStatus, }, {
-        where: {
-          "readStatus": !readStatus,
-          "conversationId": convoId,
-        }
-      });
+      whereValues = {
+        "readStatus": !readStatus,
+        "conversationId": convoId,
+      }
     }
+      await Message.update({ "readStatus": readStatus, }, {
+        where: whereValues
+      });
     res.json({ readStatus, id });
   } catch (error) {
     next(error);

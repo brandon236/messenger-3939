@@ -4,18 +4,7 @@ const Message = require("./message");
 const Sequelize = require('Sequelize');
 DataTypes = Sequelize.DataTypes
 
-const Conversation = db.define("conversation", {
-  id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  dateLastAccessed: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  }
-});
+const Conversation = db.define("conversation", {});
 
 // find conversation given two user Ids
 

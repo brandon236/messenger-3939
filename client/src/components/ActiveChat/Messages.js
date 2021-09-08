@@ -24,20 +24,20 @@ const Messages = (props) => {
       {messages.map((message) => {
         const time = moment(message.createdAt).format("h:mm");
         return message.senderId === userId ? (
-          <React.Fragment key={message.id}>
+          <Box key={message.id}>
             <SenderBubble text={message.text} time={time} />
-            {message.readStatus !== false ? (
-              <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}></Avatar>
-            ) : null}
-          </React.Fragment>
+            {message.readStatus && (
+              <Avatar alt={otherUser.username} src={otherUser.photoUrl} className={classes.avatar}/>
+            )}
+          </Box>
         ) : (
           <OtherUserBubble key={message.id} text={message.text} time={time} otherUser={otherUser} />
         );
       })}
       {/* When the other user is typing a message */}
-      {typing === true ? (
+      {typing && (
         <OtherUserBubble key={"temp"} text={"●●●"} time={null} otherUser={otherUser} />
-      ) : null}
+      )}
     </Box>
   );
 };

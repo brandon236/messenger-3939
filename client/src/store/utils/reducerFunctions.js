@@ -8,6 +8,7 @@ export const addMessageToStore = (state, payload) => {
       otherUser: sender,
       unreadMessages: 1,
       messages: [message],
+      typing: false,
     };
     newConvo.latestMessageText = message.text;
     return [newConvo, ...state];
@@ -25,6 +26,7 @@ export const addMessageToStore = (state, payload) => {
         latestMessageText: message.text,
         unreadMessages: newUnread,
         dateLastAccessed,
+        typing: false,
       };
       return newConvo;
     } else {
@@ -100,14 +102,14 @@ export const setNewRead = (state, payload) => {
     if (convo.id === convoId) {
       let newConvo = convo;
       const newMessages = newConvo.messages;
-
-      for (let i = newMessages.length-1; i >= 0; i--) {
-        if (newMessages[i].readStatus === !readStatus) {
-          newMessages[i].readStatus = readStatus;
+      const newMessagesRevered = newMessages.slice().reverse();
+      newMessagesRevered.forEach((message, index, arr) => {
+        if (message.readStatus === !readStatus) {
+          message.readStatus = readStatus;
         } else {
-          break;
+          arr.length = index + 1;
         }
-      }
+      });
       if (unreadMessages !== 0) {
         newConvo = {
           ...newConvo,
@@ -120,7 +122,7 @@ export const setNewRead = (state, payload) => {
           messages: newMessages
         }; 
       }
-        return newConvo;
+      return newConvo;
     } else {
       return convo;
     }
@@ -131,18 +133,19 @@ export const changeTyping = (state, payload) => {
   const { recipientId, typing, username } = payload;
   return state.map((convo) => {
     if (convo.id === recipientId) {
+      let newConvo = convo;
       if (username) {
         const newOtherUser = {
-          ...convo.otherUser,
+          ...newConvo.otherUser,
           typing
         }
-        const newConvo = {
+        newConvo = {
           ...convo,
           otherUser: newOtherUser
         };
         return newConvo;
       } else {
-        const newConvo = {
+        newConvo = {
           ...convo,
           typing,
         };

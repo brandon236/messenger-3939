@@ -50,11 +50,11 @@ const ChatContent = (props) => {
           {otherUser.username}
         </Typography>
         <Typography className={unreadMessages > 0 ? classes.previewTextBold : classes.previewTextNormal}>
-          {typing === false || !typing ? latestMessageText : "Typing..."}
+        {!typing ? latestMessageText : "Typing..."}
         </Typography>
       </Box>
-      <Badge className={unreadMessages === 0 || !unreadMessages ? "" : classes.unreadDisplay}>
-        {unreadMessages !== 0 ? unreadMessages : null}
+      <Badge className={!unreadMessages ? "" : classes.unreadDisplay}>
+        {unreadMessages !== 0 && unreadMessages}
       </Badge>
     </Box>
   );
