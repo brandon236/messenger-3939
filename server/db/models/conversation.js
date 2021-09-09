@@ -1,6 +1,8 @@
 const { Op } = require("sequelize");
 const db = require("../db");
 const Message = require("./message");
+const Sequelize = require('Sequelize');
+DataTypes = Sequelize.DataTypes
 
 const Conversation = db.define("conversation", {});
 

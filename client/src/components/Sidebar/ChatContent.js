@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@material-ui/core";
+import { Box, Typography, Badge } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -13,10 +13,27 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "bold",
     letterSpacing: -0.2,
   },
-  previewText: {
+  previewTextNormal: {
     fontSize: 12,
-    color: "#9CADC8",
     letterSpacing: -0.17,
+    color: "#9CADC8",
+  },
+  previewTextBold: {
+    fontSize: 12,
+    letterSpacing: -0.17,
+    fontWeight: 800,
+    color: "#000000",
+  },
+  unreadDisplay: {
+    color: "#FFFFFF",
+    fontWeight: 800,
+    backgroundColor: "#3F92FF",
+    height: 30,
+    width: 30,
+    borderRadius: "50%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
 }));
 
@@ -24,7 +41,7 @@ const ChatContent = (props) => {
   const classes = useStyles();
 
   const { conversation } = props;
-  const { latestMessageText, otherUser } = conversation;
+  const { latestMessageText, otherUser, unreadMessages, typing } = conversation;
 
   return (
     <Box className={classes.root}>
@@ -32,10 +49,13 @@ const ChatContent = (props) => {
         <Typography className={classes.username}>
           {otherUser.username}
         </Typography>
-        <Typography className={classes.previewText}>
-          {latestMessageText}
+        <Typography className={unreadMessages > 0 ? classes.previewTextBold : classes.previewTextNormal}>
+        {!typing ? latestMessageText : "Typing..."}
         </Typography>
       </Box>
+      <Badge className={!unreadMessages ? "" : classes.unreadDisplay}>
+        {unreadMessages !== 0 && unreadMessages}
+      </Badge>
     </Box>
   );
 };

@@ -1,10 +1,14 @@
 import io from "socket.io-client";
 import store from "./store";
 import {
-  setNewMessage,
   removeOfflineUser,
   addOnlineUser,
+  setTyping,
+  setRead,
 } from "./store/conversations";
+import {
+  getActive
+} from "./store/utils/thunkCreators"
 
 const socket = io(window.location.origin);
 
@@ -19,8 +23,14 @@ socket.on("connect", () => {
     store.dispatch(removeOfflineUser(id));
   });
   socket.on("new-message", (data) => {
-    store.dispatch(setNewMessage(data.message, data.sender));
+   store.dispatch(getActive(data.message, data.sender, data.senderUsername, data.newDateAccessed));
   });
+  socket.on("isTyping", (data) => {
+    store.dispatch(setTyping(data.recipientId, data.typing));
+   });
+   socket.on("new-read-status", (data) => {
+    store.dispatch(setRead(data.id, data.readStatus, data.unreadMessages));
+   });
 });
 
 export default socket;

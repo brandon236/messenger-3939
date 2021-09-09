@@ -50,7 +50,6 @@ router.get("/", async (req, res, next) => {
     for (let i = 0; i < conversations.length; i++) {
       const convo = conversations[i];
       const convoJSON = convo.toJSON();
-
       // set a property "otherUser" so that frontend will have easier access
       if (convoJSON.user1) {
         convoJSON.otherUser = convoJSON.user1;
@@ -67,10 +66,29 @@ router.get("/", async (req, res, next) => {
         convoJSON.otherUser.online = false;
       }
 
+        let unreadCount = 0;
+        for (let j = 0; j < convo.messages.length ; j++) {
+          // check if the last message was the user's own message or the other user
+          if (convoJSON.messages[j].senderId === convoJSON.otherUser.id) {
+            if (convoJSON.messages[j].readStatus === false) {
+              unreadCount++;
+            } else {
+              break;
+            }
+          } else {
+            break;
+          }
+        }
+        convoJSON.unreadMessages = unreadCount;
+
+      convoJSON.otherUser.typing = false;
       const reversedMessages = convoJSON.messages.slice(0).reverse();
       convoJSON.messages = reversedMessages;
       // set properties for notification count and latest message preview
-      convoJSON.latestMessageText = convoJSON.messages[convoJSON.messages.length-1].text;
+      if (convoJSON.messages.length !== 0) {
+        convoJSON.latestMessageText = convoJSON.messages[convoJSON.messages.length-1].text;
+      }
+      convoJSON.typing = false;
       conversations[i] = convoJSON;
     }
 
@@ -79,5 +97,6 @@ router.get("/", async (req, res, next) => {
     next(error);
   }
 });
+
 
 module.exports = router;

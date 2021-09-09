@@ -9,11 +9,11 @@ router.post("/", async (req, res, next) => {
       return res.sendStatus(401);
     }
     const senderId = req.user.id;
-    const { recipientId, text, conversationId, sender } = req.body;
+    const { recipientId, text, conversationId, sender, readStatus } = req.body;
 
     // if we already know conversation id, we can save time and just add it to message and return
     if (conversationId) {
-      const message = await Message.create({ senderId, text, conversationId });
+      const message = await Message.create({ senderId, text, conversationId, readStatus });
       return res.json({ message, sender });
     }
     // if we don't have conversation id, find a conversation to make sure it doesn't already exist
@@ -21,7 +21,6 @@ router.post("/", async (req, res, next) => {
       senderId,
       recipientId
     );
-
     if (!conversation) {
       // create conversation
       conversation = await Conversation.create({
@@ -36,8 +35,45 @@ router.post("/", async (req, res, next) => {
       senderId,
       text,
       conversationId: conversation.id,
+      readStatus: false,
     });
     res.json({ message, sender });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.put("/", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+
+    const newFoundConvo = await Conversation.findConversation(
+      req.body.senderId,
+      req.user.id,
+    );
+    // checks to make sure the user is part of the conversation
+    if (newFoundConvo) {
+      if (newFoundConvo.dataValues.id === req.body.conversationId) {
+        const { readStatus, id, conversationId } = req.body;
+        let whereValues = {};
+        if (id) {
+          whereValues = {
+            id: id
+          } 
+        } else {
+          whereValues = {
+            "readStatus": !readStatus,
+            "conversationId": conversationId,
+          }
+        }
+        await Message.update({ "readStatus": readStatus }, {
+          where: whereValues
+        });
+        res.json({ readStatus, id });
+      }
+    }
   } catch (error) {
     next(error);
   }
